@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Connect | Event Registration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="page-shell">
+    <section class="intro-panel">
+      <div class="brand-mark">CC<span>/26</span></div>
+      <p class="eyebrow">College Event 2026</p>
+      <h1>Make your next connection count.</h1>
+      <p class="intro-copy">A day for curious minds, useful conversations, and ideas that travel beyond the classroom.</p>
+      <div class="event-details">
+        <div><span>When</span><strong>18 September 2026</strong></div>
+        <div><span>Where</span><strong>Innovation Hall, Main Campus</strong></div>
+      </div>
+    </section>
+
+    <section class="form-panel" aria-labelledby="registration-title">
+      <div class="form-heading">
+        <p class="eyebrow">Reserve your place</p>
+        <h2 id="registration-title">Event registration</h2>
+        <p>Tell us a little about yourself. Fields marked with * are required.</p>
+      </div>
+      <form id="registration-form">
+        <div class="field-grid">
+          <label>Full name *<input name="fullName" required autocomplete="name" placeholder="Your name"></label>
+          <label>Email address *<input name="email" type="email" required autocomplete="email" placeholder="you@college.edu"></label>
+          <label>Phone number<input name="phone" type="tel" autocomplete="tel" placeholder="Optional"></label>
+          <label>Department *<input name="department" required placeholder="e.g. Computer Science"></label>
+          <label>Year of study *<select name="year" required><option value="">Choose year</option><option>First year</option><option>Second year</option><option>Third year</option><option>Final year</option><option>Postgraduate</option></select></label>
+        </div>
+        <fieldset>
+          <legend>How will you attend? *</legend>
+          <div class="attendance-options">
+            <label class="choice"><input type="radio" name="attendance" value="In person" required><span>In person</span></label>
+            <label class="choice"><input type="radio" name="attendance" value="Online"><span>Online</span></label>
+          </div>
+        </fieldset>
+        <button type="submit">Confirm registration <span aria-hidden="true">-&gt;</span></button>
+        <p id="form-message" class="form-message" role="status"></p>
+      </form>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
