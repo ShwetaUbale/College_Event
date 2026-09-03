@@ -11,7 +11,6 @@ pipeline {
     stages {
         stage('Validate') {
             steps {
-                // Pass code via stdin so it reads from Jenkins' local workspace
                 sh 'cat server.js | docker run --rm -i node:22-alpine node --check'
                 sh 'cat public/app.js | docker run --rm -i node:22-alpine node --check'
             }
@@ -25,24 +24,28 @@ pipeline {
 
         stage('Smoke test') {
             steps {
-                // 1. Create a dedicated bridge network
                 sh 'docker network create ${NETWORK_NAME} || true'
 
-                // 2. Start MongoDB so the health endpoint can verify its dependency
+                // 1. Start MongoDB and allow initialization
                 sh 'docker run -d --name ${MONGO_CONTAINER} --network ${NETWORK_NAME} mongo:7'
+                sh 'sleep 4'
 
-                // 3. Run the application container attached to the network
-                sh 'docker run -d --name ${TEST_CONTAINER} --network ${NETWORK_NAME} -e MONGO_URL=mongodb://${MONGO_CONTAINER}:27017 ${IMAGE_NAME}:${BUILD_NUMBER}'
+                // 2. Run the application container
+                sh 'docker run -d --name ${TEST_CONTAINER} --network ${NETWORK_NAME} -e MONGO_URL=mongodb://${MONGO_CONTAINER}:27017/college_event -e MONGODB_URI=mongodb://${MONGO_CONTAINER}:27017/college_event ${IMAGE_NAME}:${BUILD_NUMBER}'
+                sh 'sleep 3'
 
-                // 4. Run curl from a throwaway container on the SAME network
-                sh 'docker run --rm --network ${NETWORK_NAME} curlimages/curl --fail --retry 10 --retry-delay 2 http://${TEST_CONTAINER}:3000/health'
+                // 3. Retry connection refused errors while Node finishes booting
+                sh 'docker run --rm --network ${NETWORK_NAME} curlimages/curl --fail --retry 15 --retry-delay 2 --retry-connrefused http://${TEST_CONTAINER}:3000/health'
             }
         }
     }
 
     post {
         always {
-            // Clean up test container, network, and intermediate image
+            // Print app container logs to console output for debugging
+            sh 'docker logs ${TEST_CONTAINER} || true'
+
+            // Clean up
             sh 'docker rm -f ${TEST_CONTAINER} || true'
             sh 'docker rm -f ${MONGO_CONTAINER} || true'
             sh 'docker network rm ${NETWORK_NAME} || true'
