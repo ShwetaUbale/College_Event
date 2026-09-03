@@ -9,13 +9,13 @@ pipeline {
     stages {
         stage('Install') {
             steps {
-                sh 'npm ci --ignore-scripts'
+                sh 'docker run --rm -v "$PWD:/app" -w /app node:22-alpine npm ci --ignore-scripts'
             }
         }
         stage('Validate') {
             steps {
-                sh 'node --check server.js'
-                sh 'node --check public/app.js'
+                sh 'docker run --rm -v "$PWD:/app" -w /app node:22-alpine node --check server.js'
+                sh 'docker run --rm -v "$PWD:/app" -w /app node:22-alpine node --check public/app.js'
                 sh 'docker compose config -q'
             }
         }
