@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Install') {
             steps {
-                sh 'docker run --rm -v "$PWD:/app" -w /app node:22-alpine npm ci --ignore-scripts'
+                sh 'docker run --rm -v "$PWD:/app" -w /app node:22-alpine npm install --ignore-scripts'
             }
         }
         stage('Validate') {
