@@ -19,11 +19,6 @@ pipeline {
                 sh 'docker-compose config -q'
             }
         }
-        stage('Build image') {
-            steps {
-                sh 'docker build --tag ${IMAGE_NAME}:${BUILD_NUMBER} .'
-            }
-        }
         stage('Smoke test') {
             steps {
                 sh 'docker-compose up -d'
