@@ -14,8 +14,8 @@ pipeline {
         }
         stage('Validate') {
             steps {
-                sh 'docker run --rm -v "$PWD:/app" -w /app node:22-alpine node --check src/server.js'
-                'docker run --rm -v "$PWD:/app" -w /app node:22-alpine node --check public/app.js'
+                sh 'cat server.js | docker run --rm -i node:22-alpine node --check'
+                sh 'cat public/app.js | docker run --rm -i node:22-alpine node --check'
                 sh 'docker compose config -q'
             }
         }
