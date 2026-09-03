@@ -16,7 +16,7 @@ pipeline {
             steps {
                 sh 'cat server.js | docker run --rm -i node:22-alpine node --check'
                 sh 'cat public/app.js | docker run --rm -i node:22-alpine node --check'
-                sh 'docker compose config -q'
+                sh 'docker-compose config -q'
             }
         }
         stage('Build image') {
@@ -26,7 +26,7 @@ pipeline {
         }
         stage('Smoke test') {
             steps {
-                sh 'docker compose up -d'
+                sh 'docker-compose up -d'
                 sh 'curl --fail --retry 10 --retry-delay 2 http://localhost:3000/health'
             }
         }
@@ -34,7 +34,7 @@ pipeline {
 
     post {
         always {
-            sh 'docker compose down -v || true'
+            sh 'docker-compose down -v || true'
             sh 'docker image rm ${IMAGE_NAME}:${BUILD_NUMBER} || true'
             archiveArtifacts artifacts: 'package-lock.json', allowEmptyArchive: true
         }
